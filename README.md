@@ -24,17 +24,17 @@ This project is a headless Linux application server that manages local storage, 
 ### 1. Network Security and Remote Access
 * Secure Tunneling: Configured a Cloudflare Tunnel to route external subdomains directly to specific internal Docker containers. This setup allows remote access from anywhere without opening ports on the local router, protecting the network from external port scans.
 * Central Dashboard: Deployed a Homarr landing page that acts as a single point of access for all internal network services and admin tools.
-* ![](server1.png)
+ ![](server1.png)
 
 ### 2. Automated File Management and Permissions
 * API Automation: Set up an automated pipeline where different services communicate via API keys to request, find, and download files without manual intervention.
 * Linux Permissions: Managed directory structures using Linux command-line tools, setting strict user and group permissions (UID/GID matching) to ensure containers can modify files safely without compromising host security.
-* ![](server2.png)
+![](server2.png)
 
 ### 3. Systems Monitoring and Uptime Tracking
 * Uptime Monitoring: Installed Uptime Kuma to run constant HTTP and TCP ping tests on all critical container ports, sending real-time alerts if a service goes down.
 * Performance Logging: Connected an analytical dashboard backed by a PostgreSQL database to monitor server performance, network usage, and active connections.
-* ![](server3.png)
+![](server3.png)
 
 ### 4. Data Backup and Storage Integrity
 * Persistent Storage: Mapped Docker volumes to keep configuration data separate from the actual operating system files. This prevents data loss when updating or replacing containers.
