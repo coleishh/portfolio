@@ -41,12 +41,14 @@ This project is a headless Linux application server that manages local storage, 
 
 ## Troubleshooting and Technical Resolution
 
+## Troubleshooting and Technical Resolution
+
 ### The Issue
-During peak usage times with multiple remote connections, users reported severe video buffering and lag. The server was slowing down significantly, causing high disk read/write queues and performance drops.
+Several remote users reported that specific high-definition files were failing to play entirely, throwing playback errors and crashing the media client stream. The server was failing to establish a stable connection for files containing complex multi-channel audio tracks (such as EAC3 and DTS).
 
 ### The Fix
 Using the CompTIA A+ troubleshooting methodology, I investigated the issue systematically:
-1. Ran the Linux `htop` command in the terminal to check resource utilization and identified a massive spike in CPU usage.
-2. Checked the application logs and discovered the server was trying to transcode complex audio formats (like multi-channel EAC3) on the fly because the remote users' web browsers did not support them natively.
-3. Identified the bottleneck as a client-side codec compatibility issue rather than a server hardware failure.
-4. Resolved the problem by having the remote users switch from standard web browsers to native, standalone desktop or mobile apps. This allowed their devices to decode the audio natively, changing the workload to a lightweight "Direct Stream" and immediately returning server CPU usage to normal baseline levels.
+1. Ran the Linux `htop` command to monitor system resources during a failed playback attempt and checked the server's application logs.
+2. Discovered that while the NVIDIA Quadro P1000 GPU was successfully handling the video encoding layer via hardware acceleration, the server's software transcoder (`ffmpeg`) was failing to properly process and downmix the complex multi-channel audio formats. 
+3. Identified the root cause as a missing configuration policy in the server's transcoder arguments, which prevented the server's CPU from converting unsupported audio streams into a universal format (like AAC) that remote clients could decode.
+4. Resolved the problem by updating the Docker container environmental variables to correctly map and execute audio transcoding pipelines through the host's `ffmpeg` libraries. This allowed the server to automatically transcode incompatible audio tracks on the fly, eliminating the playback failures and restoring full compatibility for all remote users.
