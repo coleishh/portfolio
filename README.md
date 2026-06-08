@@ -42,7 +42,6 @@ This project is a headless Linux application server that manages local storage, 
 ![](server4.png)
 ---
 
-## Troubleshooting and Technical Resolution
 
 ## Troubleshooting and Technical Resolution
 
@@ -51,7 +50,7 @@ Several remote users reported that specific high-definition files were failing t
 
 ### The Fix
 Using the CompTIA A+ troubleshooting methodology, I investigated the issue systematically:
-1. Ran the Linux `htop` command to monitor system resources during a failed playback attempt and checked the server's application logs.
-2. Discovered that while the NVIDIA Quadro P1000 GPU was successfully handling the video encoding layer via hardware acceleration, the server's software transcoder (`ffmpeg`) was failing to properly process and downmix the complex multi-channel audio formats. 
-3. Identified the root cause as a missing configuration policy in the server's transcoder arguments, which prevented the server's CPU from converting unsupported audio streams into a universal format (like AAC) that remote clients could decode.
-4. Resolved the problem by updating the Docker container environmental variables to correctly map and execute audio transcoding pipelines through the host's `ffmpeg` libraries. This allowed the server to automatically transcode incompatible audio tracks on the fly, eliminating the playback failures and restoring full compatibility for all remote users.
+1. Checked live server performance using the Linux `htop` command and reviewed the application error logs during a failed playback stream.
+2. Discovered that while the graphics card (NVIDIA Quadro P1000) was successfully processing the video layer, the server's background software was failing to process the complex audio formats.
+3. Identified the root cause as a missing setting in the server's configuration, which blocked the CPU from converting unsupported audio tracks into a standard format (like AAC) that remote devices could play.
+4. Resolved the problem by updating the Docker container settings to properly route audio processing. This allowed the server to automatically convert incompatible audio on the fly, fixing the crashes and restoring full access for all users.
