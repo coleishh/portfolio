@@ -1,42 +1,46 @@
-# Single-Node Hybrid Cloud Infrastructure: Automated Microservices & Storage Array
+# Linux Server Project: Home Network Storage & Automated Microservices
 
-A headless Linux application server orchestrating containerized microservices via Docker. This architecture features automated content lifecycle pipelines, high-availability monitoring, token-based API integrations, and secure edge routing via an encrypted reverse proxy tunnel.
-
----
-
-## System Architecture & Core Stack
-* Host Operating System: Headless Ubuntu Server (LTS)
-* Virtualization & Containerization: Docker Engine / Docker Compose
-* Edge Networking & Security: Cloudflare Edge Tunnels
-* High Availability & Telemetry: Uptime Kuma, PostgreSQL Database, Jellystat Engine
-* Storage Matrix: Local Ext4 File System arrays with dedicated persistent volume mapping
+This project is a headless Linux application server that manages local storage, automated file systems, and network services using Docker containers. The setup includes secure remote access via a reverse proxy tunnel and real-time uptime monitoring to ensure high availability.
 
 ---
 
-## Key Infrastructure Achievements
-
-### 1. Secure Edge Networking & Unified Access Layer
-* Reverse Proxy Edge Tunnels: Integrated Cloudflare Tunnel routing to securely map subdomains to isolated internal Docker network bridge endpoints. This eliminates the need to expose vulnerable host-level inbound ports (such as port 80 or 443) to the public internet, mitigating edge-level scanning threats.
-* Unified Service Aggregation: Deployed a centralized web-based landing portal (Homarr) to map active host endpoints, giving administrators and authenticated remote clients single-point secure access to the ecosystem from any network.
-
-### 2. Asynchronous Ingestion & Lifecycle Automation
-* Event-Driven Workflows: Integrated a fully automated, asynchronous ingestion stack utilizing decoupled application components. The ecosystem leverages token-based API authentication hooks to continuously sync requests, search indexers, and handle download queues natively.
-* Automated File Operations: Configured atomic moves and precise data directory synchronization rules. The infrastructure handles incoming file parsing, folder permission auditing (matching strict UID/GID access control lists), and library metadata scanning dynamically before deploying content to the hardware-accelerated media host (Jellyfin).
-
-### 3. Proactive Telemetry & High Availability Auditing
-* Uptime Monitoring Engine: Deployed an independent uptime tracing engine (Uptime Kuma) executing routine synthetic HTTP/TCP socket pings across critical container ports to ensure continuous platform availability.
-* Granular Analytics Pipeline: Integrated a structural logging stack backed by a relational PostgreSQL database to map real-time performance variables, tracking remote client player compatibility, active transcoder bitrates, and hardware resource consumption.
-
-### 4. Data Integrity & Redundancy Strategy
-* Decoupled Configuration State: Configured strict persistent storage volumes to completely isolate immutable configuration files and databases from dynamic runtime containers, protecting systems against data loss during rolling image upgrades.
-* Cold Storage Ingestion: Implemented dedicated local archival pipelines to secure critical personal data assets, managing multi-generational user media collections independently from general streaming directories.
+## Technical Specifications & Tool Stack
+* Operating System: Ubuntu Server (Headless LTS)
+* Containerization & Virtualization: Docker / Docker Compose
+* Network Security & Remote Access: Cloudflare Tunnels (No open inbound ports)
+* Monitoring & Diagnostics: Uptime Kuma, Jellystat, PostgreSQL Database
+* Storage Configuration: Local Ext4 storage arrays with persistent volume mapping
 
 ---
 
-## Operational Optimization & Technical Resolution
+## Core Project Features
 
-### The Bottleneck
-During multi-user peak stream windows, a technical bottleneck was identified where remote client web browsers failed to interpret complex audio container profiles (such as multi-channel DTS or EAC3). This forced the server into heavy on-the-fly digital signal translation workloads, causing intermittent playback latency and structural I/O queue wait times.
+### 1. Network Security and Remote Access
+* Secure Tunneling: Configured a Cloudflare Tunnel to route external subdomains directly to specific internal Docker containers. This setup allows remote access from anywhere without opening ports on the local router, protecting the network from external port scans.
+* Central Dashboard: Deployed a Homarr landing page that acts as a single point of access for all internal network services and admin tools.
 
-### The Engineering Resolution
-Monitored live process allocation using the headless htop utility and interrogated localized application logs to confirm the root cause as a client-side codec limitation. Resolved the latency issue entirely by migrating remote end-users away from un-optimized web browsers to native, standalone desktop or mobile applications. This allowed for 100% native client-side decoding, successfully shifting the pipeline from resource-heavy audio-transcoding to a lightweight, lossless direct stream, dropping server host resource utilization back to baseline.
+### 2. Automated File Management and Permissions
+* API Automation: Set up an automated pipeline where different services communicate via API keys to request, find, and download files without manual intervention.
+* Linux Permissions: Managed directory structures using Linux command-line tools, setting strict user and group permissions (UID/GID matching) to ensure containers can modify files safely without compromising host security.
+
+### 3. Systems Monitoring and Uptime Tracking
+* Uptime Monitoring: Installed Uptime Kuma to run constant HTTP and TCP ping tests on all critical container ports, sending real-time alerts if a service goes down.
+* Performance Logging: Connected an analytical dashboard backed by a PostgreSQL database to monitor server performance, network usage, and active connections.
+
+### 4. Data Backup and Storage Integrity
+* Persistent Storage: Mapped Docker volumes to keep configuration data separate from the actual operating system files. This prevents data loss when updating or replacing containers.
+* Critical Data Backups: Implemented a dedicated local storage area to safeguard irreplaceable personal data, such as a large multi-generational family photo library, keeping it separate from standard media directories.
+
+---
+
+## Troubleshooting and Technical Resolution
+
+### The Issue
+During peak usage times with multiple remote connections, users reported severe video buffering and lag. The server was slowing down significantly, causing high disk read/write queues and performance drops.
+
+### The Fix
+Using the CompTIA A+ troubleshooting methodology, I investigated the issue systematically:
+1. Ran the Linux `htop` command in the terminal to check resource utilization and identified a massive spike in CPU usage.
+2. Checked the application logs and discovered the server was trying to transcode complex audio formats (like multi-channel EAC3) on the fly because the remote users' web browsers did not support them natively.
+3. Identified the bottleneck as a client-side codec compatibility issue rather than a server hardware failure.
+4. Resolved the problem by having the remote users switch from standard web browsers to native, standalone desktop or mobile apps. This allowed their devices to decode the audio natively, changing the workload to a lightweight "Direct Stream" and immediately returning server CPU usage to normal baseline levels.
